@@ -53,8 +53,8 @@ class AuthController:
         if not self.pass_handler.verify(db_user.password, user.password):
             raise BadRequestException("Incorrect email or password")
 
-        access_token = self.jwt_service.encode_access_token({"sub": db_user.id})
-        refresh_token = self.jwt_service.encode_refresh_token({"sub": db_user.id})
+        access_token = self.jwt_service.encode_access_token({"sub": str(db_user.id)})
+        refresh_token = self.jwt_service.encode_refresh_token({"sub": str(db_user.id)})
 
         return {
             "access_token": access_token,
