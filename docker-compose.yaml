@@ -1,0 +1,42 @@
+services:
+  be-tandau:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    restart: always
+    depends_on:
+      - db-tandau
+      - redis-tandau
+    networks:
+      - main
+
+
+  db-tandau:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - "pg_data:/usr/lib/postgresql/data"
+    env_file:
+      - .env
+    networks:
+      - main
+
+  redis-tandau:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - main
+
+
+networks:
+  main: { }
+
+volumes:
+  pg_data: { }
