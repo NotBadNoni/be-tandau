@@ -5,7 +5,7 @@ from fastapi import APIRouter
 from src.controllers.university import UniversityController
 from src.schemas.university import CreateUniversity, UpdateUniversity, UniversityResponse
 
-router = APIRouter(prefix="/universities", tags=["Universities"])
+router = APIRouter(prefix="")
 
 
 @router.get("/", response_model=list[UniversityResponse])
