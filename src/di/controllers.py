@@ -1,8 +1,10 @@
 from dishka import Provider, Scope, provide
 
 from src.controllers.auth import AuthController
+from src.controllers.university import UniversityController
 from src.controllers.user import UserController
 from src.core.databases import UoW
+from src.repositories.university import UniversityRepository
 from src.repositories.user import UserRepository
 from src.services.email_service import EmailService
 from src.services.password import PasswordHandler
@@ -33,5 +35,18 @@ class ControllersDi(Provider):
         )
 
     @provide
-    def get_user_container(self, uow: UoW, user_repository: UserRepository, password_handler: PasswordHandler) -> UserController:
+    def get_user_container(
+            self,
+            uow: UoW,
+            user_repository: UserRepository,
+            password_handler: PasswordHandler
+    ) -> UserController:
         return UserController(uow, user_repository, password_handler)
+
+    @provide
+    def get_universal_container(
+            self,
+            uow: UoW,
+            university_repository: UniversityRepository,
+    ) -> UniversityController:
+        return UniversityController(uow, university_repository)
