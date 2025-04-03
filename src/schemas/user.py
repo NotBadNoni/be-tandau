@@ -16,7 +16,7 @@ class UserUpdate(BaseUser):
 
     password: Optional[str] = None
     new_password: Optional[str] = None
-    verify_password: Optional[str] = None
+    verify_new_password: Optional[str] = None
 
 
 class UserResponse(BaseUser):

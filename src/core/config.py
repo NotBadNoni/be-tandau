@@ -1,9 +1,13 @@
+import os
 from pathlib import Path
 
 from pydantic_settings import BaseSettings
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+MEDIA_DIR = os.path.join(BASE_DIR / "media")
+if not os.path.exists(MEDIA_DIR):
+    os.makedirs(MEDIA_DIR)
 
 class Settings(BaseSettings):
     POSTGRES_USER: str

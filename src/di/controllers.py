@@ -33,5 +33,5 @@ class ControllersDi(Provider):
         )
 
     @provide
-    def get_user_container(self, uow: UoW, user_repository: UserRepository) -> UserController:
-        return UserController(uow, user_repository)
+    def get_user_container(self, uow: UoW, user_repository: UserRepository, password_handler: PasswordHandler) -> UserController:
+        return UserController(uow, user_repository, password_handler)

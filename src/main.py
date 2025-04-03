@@ -1,7 +1,9 @@
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncEngine
+from starlette.staticfiles import StaticFiles
 
+from src.core.config import MEDIA_DIR
 from src.core.store import init_db
 from src.di.app_provider import create_container
 from src.routers import auth
@@ -15,7 +17,7 @@ def create_app():
     setup_dishka(container=container, app=app)
     app.include_router(router=auth.router, tags=["auth"], prefix="/auth")
     app.include_router(router=user.router, tags=["user"], prefix="/users")
-
+    app.mount('/media', StaticFiles(directory=MEDIA_DIR), name='media')
     return app
 
 

@@ -5,6 +5,7 @@ from src.services.email_service import EmailService
 from src.services.password import PasswordHandler
 from src.services.redis_service import RedisService
 from src.services.security import JWTHandler
+from src.services.upload_image import UploadImageService
 
 
 class ServicesDi(Provider):
@@ -25,3 +26,7 @@ class ServicesDi(Provider):
     @provide
     def get_jwt_service(self) -> JWTHandler:
         return JWTHandler()
+
+    @provide
+    def get_upload_image_service(self) -> UploadImageService:
+        return UploadImageService()

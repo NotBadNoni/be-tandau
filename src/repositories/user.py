@@ -14,7 +14,7 @@ class UserRepository:
         return res.scalar()
 
     async def update_user(self, user_id: int, user: dict) -> User:
-        stmt = update(User).values(**user).where(User.id == user_id)
+        stmt = update(User).values(**user).where(User.id == user_id).returning(User)
         res = await self._session.execute(stmt)
         return res.scalar()
 
@@ -25,7 +25,6 @@ class UserRepository:
 
     async def get_user_by_id(self, user_id: int) -> User:
         stmt = select(User).where(User.id == user_id)
-        print(stmt)
         res = await self._session.execute(stmt)
         return res.scalar_one_or_none()
 
