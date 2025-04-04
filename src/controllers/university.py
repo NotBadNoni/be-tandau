@@ -28,8 +28,6 @@ class UniversityController:
                 raise BadRequestException("University already exists")
 
             university = await self.university_repository.create_university(data)
-            if not university:
-                raise NotFoundException("Failed to create university")
             return university
 
     async def update_university(self, university_id: int, data: dict):
