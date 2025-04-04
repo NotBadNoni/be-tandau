@@ -11,7 +11,7 @@ class UniversityRepository:
         self._session = session
 
     async def create_university(self, data: dict) -> University:
-        stmt = insert(University).values(**data)
+        stmt = insert(University).values(**data).returning(University)
         res = await self._session.execute(stmt)
         return res.scalar()
 
@@ -33,7 +33,6 @@ class UniversityRepository:
     async def delete_university(self, university_id: int) -> University:
         stmt = delete(University).where(University.id == university_id)
         res = await self._session.execute(stmt)
-        return res.scalar_one_or_none()
 
     async def list_universities(self) -> List[University]:
         stmt = select(University).order_by(University.created_at.desc())

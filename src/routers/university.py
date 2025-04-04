@@ -8,7 +8,7 @@ from src.schemas.university import CreateUniversity, UpdateUniversity, Universit
 router = APIRouter(prefix="")
 
 
-@router.get("/")
+@router.get("/", response_model=list[UniversityResponse])
 @inject
 async def get_universities(
         controller: FromDishka[UniversityController],
@@ -16,7 +16,7 @@ async def get_universities(
     return await controller.get_universities()
 
 
-@router.get("/{university_id}")
+@router.get("/{university_id}", response_model=UniversityResponse)
 @inject
 async def get_university(
         university_id: int,
@@ -25,7 +25,7 @@ async def get_university(
     return await controller.get_university(university_id)
 
 
-@router.post("/")
+@router.post("/", response_model=UniversityResponse)
 @inject
 async def create_university(
         form: CreateUniversity,
