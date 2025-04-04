@@ -25,8 +25,8 @@ class UniversityRepository:
         res = await self._session.execute(stmt)
         return res.scalar_one_or_none()
 
-    async def get_university_by_name(self, university_id: int) -> University:
-        stmt = select(University).where(University.id == university_id)
+    async def get_university_by_name(self, name: str) -> University:
+        stmt = select(University).where(University.name == name)
         res = await self._session.execute(stmt)
         return res.scalar_one_or_none()
 
