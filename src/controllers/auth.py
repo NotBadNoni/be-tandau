@@ -4,6 +4,7 @@ import uuid
 
 from src.core.databases import UoW
 from src.core.exeptions import DuplicateValueException, BadRequestException, NotFoundException
+from src.repositories.profile import ProfileRepository
 from src.repositories.user import UserRepository
 from src.schemas.auth import SignUpSchema, SignInSchema, SendOtpSchema, VerifyOtpSchema, ResetPasswordSchema
 from src.services.email_service import EmailService
@@ -14,13 +15,14 @@ from src.services.security import JWTHandler
 
 class AuthController:
     def __init__(
-        self,
-        uow: UoW,
-        user_repository: UserRepository,
-        pass_handler: PasswordHandler,
-        jwt_service: JWTHandler,
-        email_service: EmailService,
-        redis_service: RedisService,
+            self,
+            uow: UoW,
+            user_repository: UserRepository,
+            profile_repository: ProfileRepository,
+            pass_handler: PasswordHandler,
+            jwt_service: JWTHandler,
+            email_service: EmailService,
+            redis_service: RedisService,
     ):
         self.uow = uow
         self.user_repository = user_repository
@@ -28,6 +30,7 @@ class AuthController:
         self.jwt_service = jwt_service
         self.email_service = email_service
         self.redis_service = redis_service
+        self.profile_repository = profile_repository
 
     async def register_user(self, user: SignUpSchema):
         existing_by_email = await self.user_repository.get_user_by_email(user.email)
@@ -41,8 +44,10 @@ class AuthController:
         user.password = self.pass_handler.hash(user.password)
 
         async with self.uow:
-            await self.user_repository.create_user(user.dict())
-
+            created_user = await self.user_repository.create_user(user.dict())
+            await self.profile_repository.create_profile({
+                "user_id": created_user.id,
+            })
         return {"detail": "User created successfully"}
 
     async def login_user(self, user: SignInSchema):

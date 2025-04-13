@@ -9,6 +9,7 @@ MEDIA_DIR = os.path.join(BASE_DIR / "media")
 if not os.path.exists(MEDIA_DIR):
     os.makedirs(MEDIA_DIR)
 
+
 class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
@@ -26,6 +27,7 @@ class Settings(BaseSettings):
 
     SMTP_USERNAME: str
     SMTP_PASSWORD: str
+    OPENAI_API_KEY: str
 
     class Config:
         env_file = BASE_DIR / ".env"
@@ -33,6 +35,16 @@ class Settings(BaseSettings):
     @property
     def async_db_url(self):
         return "postgresql+asyncpg://{}:{}@{}:{}/{}".format(
+            self.POSTGRES_USER,
+            self.POSTGRES_PASSWORD,
+            self.POSTGRES_HOST,
+            self.POSTGRES_PORT,
+            self.POSTGRES_DB
+        )
+
+    @property
+    def db_url(self):
+        return "postgresql://{}:{}@{}:{}/{}".format(
             self.POSTGRES_USER,
             self.POSTGRES_PASSWORD,
             self.POSTGRES_HOST,

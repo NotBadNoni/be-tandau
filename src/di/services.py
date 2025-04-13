@@ -1,7 +1,10 @@
 from dishka import Scope, provide, Provider
+from openai import AsyncOpenAI
 
+from src.core.config import settings
 from src.core.redis import RedisEngine
 from src.services.email_service import EmailService
+from src.services.openai_cli import OpenAIClient
 from src.services.password import PasswordHandler
 from src.services.redis_service import RedisService
 from src.services.security import JWTHandler
@@ -30,3 +33,7 @@ class ServicesDi(Provider):
     @provide
     def get_upload_image_service(self) -> UploadImageService:
         return UploadImageService()
+
+    @provide
+    def get_openai_client(self) -> OpenAIClient:
+        return OpenAIClient(api_key=settings.OPENAI_API_KEY)

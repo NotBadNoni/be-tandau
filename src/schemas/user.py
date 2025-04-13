@@ -1,26 +1,60 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
+
+from src.core.constants import UserRoles
 
 
-class BaseUser(BaseModel):
-    email: str
+class ProfileBase(BaseModel):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    gender: Optional[str] = None
+    language: Optional[str] = None
+    country: Optional[str] = None
+    date_of_birth: Optional[str] = None
+    profile_picture: Optional[str] = None
+
+
+class ProfileCreate(ProfileBase):
+    pass
+
+
+class ProfileUpdate(ProfileBase):
+    pass
+
+
+class ProfileResponse(ProfileBase):
+    id: int
     username: str
-    full_name: Optional[str] = None
+    email: str
+
+    class Config:
+        from_attributes = True
 
 
-class UserUpdate(BaseUser):
-    email: Optional[str] = None
-    full_name: Optional[str] = None
+class UserBase(BaseModel):
     username: Optional[str] = None
+    email: Optional[str] = None
+    role: Optional[UserRoles] = None
 
+
+class UserUpdate(UserBase):
     password: Optional[str] = None
     new_password: Optional[str] = None
     verify_new_password: Optional[str] = None
 
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    gender: Optional[str] = None
+    language: Optional[str] = None
+    country: Optional[str] = None
+    date_of_birth: Optional[str] = None
+    profile_picture: Optional[str] = None
 
-class UserResponse(BaseUser):
+
+class UserResponse(UserBase):
     id: int
+    profile: Optional[ProfileBase] = None
 
     class Config:
         from_attributes = True

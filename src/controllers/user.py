@@ -1,7 +1,8 @@
 from src.core.databases import UoW
-from src.core.exeptions import BadRequestException
+from src.core.exeptions import BadRequestException, NotFoundException
+from src.repositories.profile import ProfileRepository
 from src.repositories.user import UserRepository
-from src.schemas.user import UserUpdate
+from src.schemas.user import UserUpdate, UserResponse
 from src.services.password import PasswordHandler
 
 
@@ -10,45 +11,84 @@ class UserController:
             self,
             uow: UoW,
             user_repository: UserRepository,
+            profile_repository: ProfileRepository,
             password_service: PasswordHandler
     ):
         self.uow = uow
         self.user_repository = user_repository
+        self.profile_repository = profile_repository
         self.password_service = password_service
 
     async def profile_user(self, user_id: int):
         db_user = await self.user_repository.get_user_by_id(user_id)
         if not db_user:
             raise BadRequestException("User with this id does not exist")
-
-        return db_user
+        return await self._get_me(user_id)
 
     async def profile_change(self, user_id: int, form: UserUpdate):
         db_user = await self.user_repository.get_user_by_id(user_id)
         if not db_user:
             raise BadRequestException("User not found")
 
-        if db_user.username != form.username:
+        if form.username and form.username != db_user.username:
             if await self.user_repository.get_user_by_username(form.username):
-                raise BadRequestException("User with this username already exists")
-        if db_user.email != form.email:
+                raise BadRequestException("Username already exists")
+
+        if form.email and form.email != db_user.email:
             if await self.user_repository.get_user_by_email(form.email):
-                raise BadRequestException("User with this email already exists")
-        update_data = form.dict(exclude_unset=True)
+                raise BadRequestException("Email already exists")
+
+        user_update = form.dict(exclude_unset=True, exclude={"password", "new_password", "verify_new_password",
+                                                             "first_name", "last_name", "gender", "language",
+                                                             "country", "date_of_birth", "profile_picture"})
+        profile_update = form.dict(exclude_unset=True,
+                                   exclude={"email", "username", "password", "new_password", "verify_new_password"})
+
+        if form.password:
+            if not form.new_password or not form.verify_new_password:
+                raise BadRequestException("New password fields required")
+            if not self.password_service.verify(db_user.password, form.password):
+                raise BadRequestException("Incorrect current password")
+            if form.new_password != form.verify_new_password:
+                raise BadRequestException("Passwords do not match")
+
+            user_update["password"] = self.password_service.hash(form.new_password)
+
         async with self.uow:
-            await self.user_repository.update_user(db_user.id, update_data)
+            if user_update:
+                await self.user_repository.update_user(user_id, user_update)
 
-            if form.password:
-                if not form.new_password or not form.verify_new_password:
-                    raise BadRequestException("New Password and Verification are required")
+            db_profile = await self.profile_repository.get_profile_by_user_id(user_id)
+            if not db_profile:
+                await self.profile_repository.create_profile({"user_id": user_id})
 
-                if not self.password_service.verify(db_user.password, form.password):
-                    raise BadRequestException("Current password does not match")
+            if profile_update:
+                await self.profile_repository.update_profile(user_id, profile_update)
+        db_user = await self.user_repository.get_user_by_id(user_id)
+        return await self._get_me(user_id)
 
-                if form.new_password != form.verify_new_password:
-                    raise BadRequestException("New password and verification do not match")
+    async def _get_me(self, user_id: int) -> UserResponse:
+        db_user = await self.user_repository.get_user_by_id(user_id)
+        if not db_user:
+            raise NotFoundException("User not found")
 
-                db_user.password = self.password_service.hash(form.new_password)
-                await self.user_repository.update_user(db_user.id, {"password": db_user.password})
+        user_dict = {
+            "id": db_user.id,
+            "email": db_user.email,
+            "username": db_user.username,
+            "role": db_user.role,
+        }
 
-        return db_user
+        if db_user.profile:
+            user_dict['profile'] = {
+                'id': db_user.profile.id,
+                "first_name": db_user.profile.first_name,
+                "last_name": db_user.profile.last_name,
+                "gender": db_user.profile.gender,
+                "language": db_user.profile.language,
+                "country": db_user.profile.country,
+                "date_of_birth": db_user.profile.date_of_birth,
+                "profile_picture": db_user.profile.profile_picture,
+            }
+
+        return UserResponse(**user_dict)
