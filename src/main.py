@@ -1,6 +1,7 @@
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncEngine
+from starlette.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
 
 from src.core.config import MEDIA_DIR
@@ -15,6 +16,13 @@ container = create_container()
 
 def create_app():
     app = FastAPI()
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
     app.mount('/media', StaticFiles(directory=MEDIA_DIR), name='media')
     setup_dishka(container=container, app=app)
     app.include_router(router=auth.router, tags=["auth"], prefix="/api/v1/auth")
