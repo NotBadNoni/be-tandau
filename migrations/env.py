@@ -14,6 +14,7 @@ from src.models.university import University, university_specialties
 from src.models.speciality import Specialty, subject_combination_specialties
 from src.models.chat import Chat
 from src.models.chat_messages import ChatMessages
+from src.models.favorites import Favorites
 
 config = context.config
 config.set_main_option('sqlalchemy.url', settings.db_url)
