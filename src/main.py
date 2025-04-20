@@ -1,6 +1,6 @@
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
-from sqladmin import ModelView, Admin
+from sqladmin import Admin
 from sqlalchemy.ext.asyncio import AsyncEngine
 from starlette.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
@@ -15,14 +15,16 @@ from src.routers import user
 
 container = create_container()
 
-
 from sqladmin import ModelView
+
 
 def register_models(admin, models: list[type]):
     for model in models:
         class ModelViewClass(ModelView, model=model):
             column_list = [c.name for c in model.__table__.columns]
+
         admin.add_view(ModelViewClass)
+
 
 def create_app():
     app = FastAPI()
@@ -34,6 +36,7 @@ def create_app():
         allow_headers=["*"],
     )
     app.mount('/media', StaticFiles(directory=MEDIA_DIR), name='media')
+    app.mount("/static", StaticFiles(directory="collected_static"), name="static")
     setup_dishka(container=container, app=app)
     app.include_router(router=auth.router, tags=["auth"], prefix="/api/v1/auth")
     app.include_router(router=user.router, tags=["user"], prefix="/api/v1/users")
