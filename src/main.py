@@ -1,18 +1,23 @@
-import os
-
-import sqladmin
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 from sqladmin import Admin
 from sqlalchemy.ext.asyncio import AsyncEngine
 from starlette.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from src.core.config import MEDIA_DIR
 from src.di.app_provider import create_container
 from src.models import sqlalchemy_models
-from src.routers import auth, subject, speciality, subject_combination, subject_combination_specialties, \
-    university_specialties, chat
+from src.routers import (
+    auth,
+    subject,
+    speciality,
+    subject_combination,
+    subject_combination_specialties,
+    university_specialties,
+    chat
+)
 from src.routers import university
 from src.routers import user
 
@@ -38,8 +43,8 @@ def create_app():
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    app.add_middleware(ProxyHeadersMiddleware)
     app.mount('/media', StaticFiles(directory=MEDIA_DIR), name='media')
-    app.mount("/static", StaticFiles(directory="collected_static"), name="static")
     setup_dishka(container=container, app=app)
     app.include_router(router=auth.router, tags=["auth"], prefix="/api/v1/auth")
     app.include_router(router=user.router, tags=["user"], prefix="/api/v1/users")
