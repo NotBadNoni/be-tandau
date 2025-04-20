@@ -1,3 +1,6 @@
+import os
+
+import sqladmin
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 from sqladmin import Admin
@@ -36,6 +39,7 @@ def create_app():
         allow_headers=["*"],
     )
     app.mount('/media', StaticFiles(directory=MEDIA_DIR), name='media')
+    app.mount("/static", StaticFiles(directory="collected_static"), name="static")
     setup_dishka(container=container, app=app)
     app.include_router(router=auth.router, tags=["auth"], prefix="/api/v1/auth")
     app.include_router(router=user.router, tags=["user"], prefix="/api/v1/users")
