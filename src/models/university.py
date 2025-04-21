@@ -4,13 +4,6 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from src.models import Base, TimestampMixin
 
-university_specialties = sa.Table(
-    "university_specialties",
-    Base.metadata,
-    sa.Column("university_id", sa.Integer, sa.ForeignKey("universities.id"), primary_key=True),
-    sa.Column("specialty_id", sa.Integer, sa.ForeignKey("specialties.id"), primary_key=True),
-)
-
 
 class University(Base, TimestampMixin):
     __tablename__ = "universities"

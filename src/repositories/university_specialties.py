@@ -1,7 +1,7 @@
 from sqlalchemy import insert, delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.models.university import university_specialties
+from src.models import UniversitySpecialties
 
 
 class UniversitySpecialtiesRepository:
@@ -12,7 +12,7 @@ class UniversitySpecialtiesRepository:
         """
         Inserts a row (university_id, specialty_id) into the 'university_specialties' table.
         """
-        stmt = insert(university_specialties).values(
+        stmt = insert(UniversitySpecialties).values(
             university_id=university_id,
             specialty_id=specialty_id
         )
@@ -22,9 +22,9 @@ class UniversitySpecialtiesRepository:
         """
         Deletes the row linking university_id and specialty_id.
         """
-        stmt = delete(university_specialties).where(
-            university_specialties.c.university_id == university_id,
-            university_specialties.c.specialty_id == specialty_id
+        stmt = delete(UniversitySpecialties).where(
+            UniversitySpecialties.university_id == university_id,
+            UniversitySpecialties.specialty_id == specialty_id
         )
         await self._session.execute(stmt)
 
@@ -32,9 +32,9 @@ class UniversitySpecialtiesRepository:
         """
         Checks if the row (university_id, specialty_id) exists in the 'university_specialties' table.
         """
-        stmt = select(university_specialties).where(
-            university_specialties.c.university_id == university_id,
-            university_specialties.c.specialty_id == specialty_id
+        stmt = select(UniversitySpecialties).where(
+            UniversitySpecialties.university_id == university_id,
+            UniversitySpecialties.specialty_id == specialty_id
         )
         result = await self._session.execute(stmt)
         row = result.first()

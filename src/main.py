@@ -6,6 +6,7 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
+from src import SubjectCombinationSpecialtiesAdmin
 from src.core.config import MEDIA_DIR
 from src.di.app_provider import create_container
 from src.models import sqlalchemy_models
@@ -30,8 +31,10 @@ def register_models(admin, models: list[type]):
     for model in models:
         class ModelViewClass(ModelView, model=model):
             column_list = [c.name for c in model.__table__.columns]
+            form_include_pk = True
 
         admin.add_view(ModelViewClass)
+    admin.add_view(SubjectCombinationSpecialtiesAdmin)
 
 
 def create_app():

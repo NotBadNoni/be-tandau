@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import DateTime, func
+from sqlalchemy import DateTime
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import declarative_base, mapped_column
 
@@ -30,6 +30,9 @@ from .user import User
 from .speciality import Specialty
 from .subject import Subject
 from .subject_combination import SubjectCombination
+from .university_specialties import UniversitySpecialties
+from src.models.university_specialties import UniversitySpecialties
+from src.models.subject_combination_specialties import SubjectCombinationSpecialties
 from .university import University
 
 sqlalchemy_models = [
@@ -41,5 +44,6 @@ sqlalchemy_models = [
     Specialty,
     Subject,
     SubjectCombination,
-    University
+    University,
+    UniversitySpecialties,
 ]

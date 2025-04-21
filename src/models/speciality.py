@@ -3,13 +3,6 @@ import sqlalchemy.orm as orm
 
 from src.models import Base, TimestampMixin
 
-subject_combination_specialties = sa.Table(
-    "subject_combination_specialties",
-    Base.metadata,
-    sa.Column("subject_combination_id", sa.Integer, sa.ForeignKey("subject_combinations.id"), primary_key=True),
-    sa.Column("specialty_id", sa.Integer, sa.ForeignKey("specialties.id"), primary_key=True),
-)
-
 
 class Specialty(Base, TimestampMixin):
     __tablename__ = "specialties"
@@ -20,7 +13,7 @@ class Specialty(Base, TimestampMixin):
 
     valid_combinations: orm.Mapped[list["SubjectCombination"]] = orm.relationship(
         "SubjectCombination",
-        secondary=subject_combination_specialties,
+        secondary="subject_combination_specialties",
         back_populates="specialties"
     )
 

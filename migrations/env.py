@@ -6,15 +6,7 @@ from sqlalchemy import pool
 
 from src.core.config import settings
 from src.models import Base
-from src.models.subject import Subject
-from src.models.subject_combination import SubjectCombination
-from src.models.user import User
-from src.models.profile import Profile
-from src.models.university import University, university_specialties
-from src.models.speciality import Specialty, subject_combination_specialties
-from src.models.chat import Chat
-from src.models.chat_messages import ChatMessages
-from src.models.favorites import Favorites
+from src.models import sqlalchemy_models
 
 config = context.config
 config.set_main_option('sqlalchemy.url', settings.db_url)

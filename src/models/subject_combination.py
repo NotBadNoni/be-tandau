@@ -2,7 +2,6 @@ import sqlalchemy as sa
 import sqlalchemy.orm as orm
 
 from src.models import Base, TimestampMixin
-from src.models.speciality import subject_combination_specialties
 from src.models.subject import Subject
 
 
@@ -19,7 +18,7 @@ class SubjectCombination(Base, TimestampMixin):
 
     specialties: orm.Mapped[list["Specialty"]] = orm.relationship(
         "Specialty",
-        secondary=subject_combination_specialties,
+        secondary="subject_combination_specialties",
         back_populates="valid_combinations"
     )
 
