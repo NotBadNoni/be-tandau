@@ -1,6 +1,6 @@
 from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy.orm import selectinload
 
 from src.models.chat import Chat
 from src.models.chat_messages import ChatMessages
@@ -23,6 +23,14 @@ class ChatRepository:
         )
         result = await self._session.execute(stmt)
         return result.unique().scalar_one_or_none()
+
+    async def get_chats(self, user_id: int):
+        stmt = (
+            select(Chat)
+            .where(Chat.user_id == user_id)
+        )
+        chats = await self._session.execute(stmt)
+        return chats.scalars().all()
 
 
 class ChatMessageRepository:

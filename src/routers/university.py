@@ -38,6 +38,16 @@ async def create_university(
         raise HTTPException(status_code=400, detail=e.message)
 
 
+@router.get("/by-country", response_model=List[UniversityResponse])
+@inject
+async def get_by_country(
+        country_name: str = Query(...),
+        controller: FromDishka[UniversityController] = None
+):
+    print(await controller.get_universities_by_country(country_name))
+    return await controller.get_universities_by_country(country_name)
+
+
 @router.get("/{university_id}", response_model=UniversityResponse)
 @inject
 async def get_university(
@@ -85,12 +95,3 @@ async def get_universities_by_specialty(
     Return all universities offering the given specialty.
     """
     return await controller.get_universities_by_specialty(specialty_id)
-
-
-@router.get("/by-country", response_model=List[UniversityResponse])
-@inject
-async def get_by_country(
-        country_name: str = Query(...),
-        controller: FromDishka[UniversityController] = None
-):
-    return await controller.get_universities_by_country(country_name)

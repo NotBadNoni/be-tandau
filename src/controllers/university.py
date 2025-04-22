@@ -54,6 +54,4 @@ class UniversityController:
 
     async def get_universities_by_country(self, country_name: str):
         universities = await self.university_repository.get_universities_by_country(country_name)
-        if not universities:
-            raise NotFoundException(f"No universities found for country: {country_name}")
         return universities

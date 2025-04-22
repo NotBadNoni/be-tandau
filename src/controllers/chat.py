@@ -30,6 +30,10 @@ class ChatController:
             raise NotFoundException("Chat not found")
         return chat
 
+    async def get_chats(self, user_id: int):
+        chats = await self.chat_repo.get_chats(user_id)
+        return chats
+
     async def send_message(self, chat_id: int, user_message: str):
         country_keywords = ["uk", "united kingdom", "usa", "canada", "kazakhstan", "europe"]
         country_name = None

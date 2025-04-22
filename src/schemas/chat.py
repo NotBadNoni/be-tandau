@@ -1,6 +1,7 @@
-from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional, List
+
+from pydantic import BaseModel
 
 
 class ChatMessageCreate(BaseModel):
@@ -31,3 +32,8 @@ class ChatResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class ListChats(BaseModel):
+    id: int
+    chat_name: str

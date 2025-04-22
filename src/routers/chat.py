@@ -1,12 +1,23 @@
+from typing import List
+
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
 from fastapi import APIRouter, Depends
 
 from src.controllers.chat import ChatController
 from src.core.middlewares import get_current_user
-from src.schemas.chat import ChatCreate, ChatMessageCreate, ChatResponse, ChatMessageResponse
+from src.schemas.chat import ChatCreate, ChatMessageCreate, ChatResponse, ChatMessageResponse, ListChats
 
-router = APIRouter(prefix="/chat")
+router = APIRouter(prefix="/chats")
+
+
+@router.get("/", response_model=List[ListChats])
+@inject
+async def get_all_chats(
+        controller: FromDishka[ChatController],
+        user=Depends(get_current_user)
+):
+    return await controller.get_chats(user.id)
 
 
 @router.post("/")
