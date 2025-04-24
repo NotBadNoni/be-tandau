@@ -6,14 +6,11 @@ class OpenAIClient:
         self.api_key = api_key
         self.client = AsyncOpenAI(api_key=self.api_key)
 
-    async def get_chat_response(self, prompt: str) -> str:
-        """
-        Sends a prompt to OpenAI and returns the assistant's reply.
-        """
+    async def get_chat_response(self, messages) -> str:
         try:
             response = await self.client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": prompt}],
+                model="gpt-4o-mini",
+                messages=messages,
                 temperature=0.7,
                 max_tokens=800,
             )

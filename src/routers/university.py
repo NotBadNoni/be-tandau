@@ -22,20 +22,20 @@ async def list_universities(
 ):
     return await controller.get_universities()
 
-
-@router.post("", response_model=UniversityResponse)
-@inject
-async def create_university(
-        data: UniversityCreate,
-        controller: FromDishka[UniversityController]
-):
-    """
-    data: { "name": "...", "image": "...", "description": "...", etc. }
-    """
-    try:
-        return await controller.create_university(data.dict())
-    except BadRequestException as e:
-        raise HTTPException(status_code=400, detail=e.message)
+#
+# @router.post("", response_model=UniversityResponse)
+# @inject
+# async def create_university(
+#         data: UniversityCreate,
+#         controller: FromDishka[UniversityController]
+# ):
+#     """
+#     data: { "name": "...", "image": "...", "description": "...", etc. }
+#     """
+#     try:
+#         return await controller.create_university(data.dict())
+#     except BadRequestException as e:
+#         raise HTTPException(status_code=400, detail=e.message)
 
 
 @router.get("/by-country", response_model=List[UniversityResponse])
@@ -59,30 +59,30 @@ async def get_university(
     except NotFoundException as e:
         raise HTTPException(status_code=404, detail=e.message)
 
-
-@router.put("/{university_id}", response_model=UniversityResponse)
-@inject
-async def update_university(
-        university_id: int,
-        data: UniversityUpdate,
-        controller: FromDishka[UniversityController]
-):
-    try:
-        return await controller.update_university(university_id, data.dict(exclude_unset=True))
-    except NotFoundException as e:
-        raise HTTPException(status_code=404, detail=e.message)
-
-
-@router.delete("/{university_id}")
-@inject
-async def delete_university(
-        university_id: int,
-        controller: FromDishka[UniversityController]
-):
-    try:
-        return await controller.delete_university(university_id)
-    except NotFoundException as e:
-        raise HTTPException(status_code=404, detail=e.message)
+#
+# @router.put("/{university_id}", response_model=UniversityResponse)
+# @inject
+# async def update_university(
+#         university_id: int,
+#         data: UniversityUpdate,
+#         controller: FromDishka[UniversityController]
+# ):
+#     try:
+#         return await controller.update_university(university_id, data.dict(exclude_unset=True))
+#     except NotFoundException as e:
+#         raise HTTPException(status_code=404, detail=e.message)
+#
+#
+# @router.delete("/{university_id}")
+# @inject
+# async def delete_university(
+#         university_id: int,
+#         controller: FromDishka[UniversityController]
+# ):
+#     try:
+#         return await controller.delete_university(university_id)
+#     except NotFoundException as e:
+#         raise HTTPException(status_code=404, detail=e.message)
 
 
 @router.get("/by-specialty/{specialty_id}", response_model=List[UniversityResponse])

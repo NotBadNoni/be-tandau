@@ -1,22 +1,22 @@
 import os.path
 import uuid
 
-from fastapi import UploadFile
+import aiofiles
 
 from src.core.config import MEDIA_DIR
 
 
 class UploadImageService:
-    async def upload_image(self, image: UploadFile):
-        filename = image.filename.split(".")
-        path_url = f"{filename[0]}-{uuid.uuid4()}.{filename[-1]}"
-        async with open(MEDIA_DIR / path_url, "wb") as f:
-            f.write(image.file.read())
+    async def upload_image(self, chunks: bytes):
+        filename = f"{uuid.uuid4().hex}.jpg"
+        async with aiofiles.open(f"{MEDIA_DIR}/{filename}", "wb") as f:
+            await f.write(chunks)
 
-        return path_url
+        return filename
 
-    async def delete_image(self, path_url):
-        if os.path.exists(path_url):
-            os.remove(path_url)
+    async def delete_image(self, filename):
+        full_path = f"{MEDIA_DIR}/{filename}"
+        if os.path.exists(full_path):
+            os.remove(full_path)
             return True
         return False

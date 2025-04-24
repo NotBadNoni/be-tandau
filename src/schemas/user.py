@@ -1,6 +1,7 @@
+from datetime import date
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 
 from src.core.constants import UserRoles
 
@@ -11,16 +12,8 @@ class ProfileBase(BaseModel):
     gender: Optional[str] = None
     language: Optional[str] = None
     country: Optional[str] = None
-    date_of_birth: Optional[str] = None
+    date_of_birth: Optional[date] = None
     profile_picture: Optional[str] = None
-
-
-class ProfileCreate(ProfileBase):
-    pass
-
-
-class ProfileUpdate(ProfileBase):
-    pass
 
 
 class ProfileResponse(ProfileBase):
@@ -47,8 +40,8 @@ class UserUpdate(UserBase):
     gender: Optional[str] = None
     language: Optional[str] = None
     country: Optional[str] = None
-    date_of_birth: Optional[str] = None
-    profile_picture: Optional[str] = None
+    date_of_birth: Optional[date] = None
+    profile_picture: Optional[bytes] = None
 
 
 class UserResponse(UserBase):

@@ -7,8 +7,6 @@ from fastapi import APIRouter, HTTPException, Query
 from src.controllers.speciality import SpecialtyController
 from src.core.exeptions import NotFoundException, BadRequestException
 from src.schemas.specialty import (
-    SpecialtyCreate,
-    SpecialtyUpdate,
     SpecialtyResponse
 )
 
@@ -23,16 +21,17 @@ async def list_specialties(
     return await controller.list_specialties()
 
 
-@router.post("", response_model=SpecialtyResponse)
-@inject
-async def create_specialty(
-        data: SpecialtyCreate,
-        controller: FromDishka[SpecialtyController]
-):
-    try:
-        return await controller.create_specialty(data.dict())
-    except BadRequestException as e:
-        raise HTTPException(status_code=400, detail=e.message)
+#
+# @router.post("", response_model=SpecialtyResponse)
+# @inject
+# async def create_specialty(
+#         data: SpecialtyCreate,
+#         controller: FromDishka[SpecialtyController]
+# ):
+#     try:
+#         return await controller.create_specialty(data.dict())
+#     except BadRequestException as e:
+#         raise HTTPException(status_code=400, detail=e.message)
 
 @router.get("/by-subjects", response_model=List[SpecialtyResponse])
 @inject
@@ -60,32 +59,32 @@ async def get_specialty(
     except NotFoundException as e:
         raise HTTPException(status_code=404, detail=e.message)
 
-
-@router.put("/{specialty_id}", response_model=SpecialtyResponse)
-@inject
-async def update_specialty(
-        specialty_id: int,
-        data: SpecialtyUpdate,
-        controller: FromDishka[SpecialtyController]
-):
-    try:
-        return await controller.update_specialty(specialty_id, data.dict(exclude_unset=True))
-    except NotFoundException as e:
-        raise HTTPException(status_code=404, detail=e.message)
-    except BadRequestException as e:
-        raise HTTPException(status_code=400, detail=e.message)
-
-
-
-
-
-@router.delete("/{specialty_id}")
-@inject
-async def delete_specialty(
-        specialty_id: int,
-        controller: FromDishka[SpecialtyController]
-):
-    try:
-        return await controller.delete_specialty(specialty_id)
-    except NotFoundException as e:
-        raise HTTPException(status_code=404, detail=e.message)
+#
+# @router.put("/{specialty_id}", response_model=SpecialtyResponse)
+# @inject
+# async def update_specialty(
+#         specialty_id: int,
+#         data: SpecialtyUpdate,
+#         controller: FromDishka[SpecialtyController]
+# ):
+#     try:
+#         return await controller.update_specialty(specialty_id, data.dict(exclude_unset=True))
+#     except NotFoundException as e:
+#         raise HTTPException(status_code=404, detail=e.message)
+#     except BadRequestException as e:
+#         raise HTTPException(status_code=400, detail=e.message)
+#
+#
+#
+#
+#
+# @router.delete("/{specialty_id}")
+# @inject
+# async def delete_specialty(
+#         specialty_id: int,
+#         controller: FromDishka[SpecialtyController]
+# ):
+#     try:
+#         return await controller.delete_specialty(specialty_id)
+#     except NotFoundException as e:
+#         raise HTTPException(status_code=404, detail=e.message)

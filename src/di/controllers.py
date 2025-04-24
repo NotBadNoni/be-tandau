@@ -26,6 +26,7 @@ from src.services.openai_cli import OpenAIClient
 from src.services.password import PasswordHandler
 from src.services.redis_service import RedisService
 from src.services.security import JWTHandler
+from src.services.upload_image import UploadImageService
 
 
 class ControllersDi(Provider):
@@ -58,9 +59,10 @@ class ControllersDi(Provider):
             uow: UoW,
             user_repository: UserRepository,
             profile_repository: ProfileRepository,
+            image_service: UploadImageService,
             password_handler: PasswordHandler
     ) -> UserController:
-        return UserController(uow, user_repository, profile_repository, password_handler)
+        return UserController(uow, user_repository, profile_repository, image_service, password_handler)
 
     @provide
     def get_universal_container(

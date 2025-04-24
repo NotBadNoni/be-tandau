@@ -20,7 +20,7 @@ async def get_all_chats(
     return await controller.get_chats(user.id)
 
 
-@router.post("/")
+@router.post("/", response_model=ListChats)
 @inject
 async def create_chat(
         data: ChatCreate,
@@ -30,7 +30,7 @@ async def create_chat(
     return await controller.create_chat(user.id, data.chat_name)
 
 
-@router.post("/message", response_model=ChatMessageResponse)
+@router.post("/message")
 @inject
 async def send_message(
         data: ChatMessageCreate,

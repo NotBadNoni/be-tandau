@@ -7,8 +7,7 @@ from src.core.exeptions import BadRequestException, NotFoundException
 from src.core.middlewares import get_current_user
 from src.schemas.user import (
     UserUpdate,
-    UserResponse, ProfileResponse,
-)
+    UserResponse, )
 
 router = APIRouter(prefix="")
 
