@@ -46,6 +46,11 @@ class ChatRepository:
         res = await self._session.execute(stmt)
         return res.scalars().all()
 
+    async def get_user_chats(self, user_id: int, chat_id) -> Chat:
+        stmt = select(Chat).where(Chat.user_id == user_id, Chat.id == chat_id)
+        res = await self._session.execute(stmt)
+        return res.scalars().first()
+
 
 class ChatMessageRepository:
     def __init__(self, session: AsyncSession) -> None:

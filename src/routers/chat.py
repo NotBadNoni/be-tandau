@@ -34,9 +34,10 @@ async def create_chat(
 @inject
 async def send_message(
         data: ChatMessageCreate,
-        controller: FromDishka[ChatController]
+        controller: FromDishka[ChatController],
+        user=Depends(get_current_user)
 ):
-    return await controller.send_message(data.chat_id, data.user_message)
+    return await controller.send_message(data.chat_id, data.user_message, user.id)
 
 
 @router.get("/{chat_id}", response_model=ChatResponse)

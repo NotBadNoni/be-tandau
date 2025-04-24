@@ -37,7 +37,10 @@ class ChatController:
     async def get_chats(self, user_id: int):
         return await self.chat_repo.get_chats(user_id)
 
-    async def send_message(self, chat_id: int, user_message: str):
+    async def send_message(self, chat_id: int, user_message: str, user_id: int):
+        chat = await self.chat_repo.get_user_chats(user_id, chat_id)
+        if not chat:
+            raise NotFoundException("Chat not found for this user")
         universities = await self.university_repo.list_universities()
 
         uni_summary = self._build_university_summary(universities[:5])
