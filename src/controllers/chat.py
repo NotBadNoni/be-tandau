@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List
 
 from src.core.databases import UoW
 from src.core.exeptions import NotFoundException
@@ -10,15 +10,6 @@ from src.services.openai_cli import OpenAIClient
 
 
 class ChatController:
-    _COUNTRY_KEYWORDS = {
-        "uk": "United Kingdom",
-        "united kingdom": "United Kingdom",
-        "usa": "USA",
-        "canada": "Canada",
-        "kazakhstan": "Kazakhstan",
-        "europe": "Europe",
-    }
-
     def __init__(
             self,
             uow: UoW,
@@ -47,11 +38,7 @@ class ChatController:
         return await self.chat_repo.get_chats(user_id)
 
     async def send_message(self, chat_id: int, user_message: str):
-        country_name = self._extract_country_name(user_message)
-        if country_name:
-            universities = await self.university_repo.get_universities_by_country(country_name)
-        else:
-            universities = await self.university_repo.list_universities()
+        universities = await self.university_repo.list_universities()
 
         uni_summary = self._build_university_summary(universities[:5])
 
@@ -60,9 +47,15 @@ class ChatController:
             {
                 "role": "system",
                 "content": (
-                    "You are an educational assistant that helps students select "
-                    "universities tailored to their interests and preferred country."
-                    f"\n\nCurrent university context (top {len(universities[:5])}):\n{uni_summary}"
+                    "You are a friendly and knowledgeable educational assistant designed to help students "
+                    "choose the most suitable university based on their preferences, such as country, program, "
+                    "and available scholarships.\n\n"
+                    "The list of universities provided to you is sourced from the official educational platform "
+                    "'https://univision.kz', which includes verified institutions with relevant data on scholarships and programs.\n\n"
+                    f"Here is a summary of the top {len(universities[:5])} universities:\n"
+                    f"{uni_summary}\n\n"
+                    "When replying to students, always detect the language of the user's message and respond in the same language. "
+                    "Be concise, helpful, and polite. If you need more details from the student, ask follow-up questions."
                 ),
             }
         ]
@@ -74,14 +67,6 @@ class ChatController:
         async with self.uow:
             await self.message_repo.add_message(chat_id, user_message, ai_answer)
         return {"ai_answer": ai_answer}
-
-    @classmethod
-    def _extract_country_name(cls, text: str) -> Optional[str]:
-        lowered = text.lower()
-        for kw, canonical in cls._COUNTRY_KEYWORDS.items():
-            if kw in lowered:
-                return canonical
-        return None
 
     @staticmethod
     def _build_university_summary(universities: List) -> str:
