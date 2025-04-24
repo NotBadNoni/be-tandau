@@ -38,14 +38,13 @@ class ChatMessageRepository:
         self._session = session
 
     async def add_message(self, chat_id: int, user_message: str, answer_message: str) -> ChatMessages:
-        stmt = insert(ChatMessages).values(
-            id=len(await self.list_chat_messages(chat_id)) + 1,
+        message = ChatMessages(
             chat_id=chat_id,
             user_message=user_message,
             answer_message=answer_message
-        ).returning(ChatMessages)
-        res = await self._session.execute(stmt)
-        return res.scalar()
+        )
+        self._session.add(message)
+        return message
 
     async def list_chat_messages(self, chat_id: int) -> list[ChatMessages]:
         stmt = select(ChatMessages).where(ChatMessages.chat_id == chat_id).order_by(ChatMessages.created_at.asc())

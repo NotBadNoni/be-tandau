@@ -35,7 +35,6 @@ class ProfileResponse(ProfileBase):
 class UserBase(BaseModel):
     username: Optional[str] = None
     email: Optional[str] = None
-    role: Optional[UserRoles] = None
 
 
 class UserUpdate(UserBase):
@@ -54,6 +53,7 @@ class UserUpdate(UserBase):
 
 class UserResponse(UserBase):
     id: int
+    role: Optional[UserRoles] = None
     profile: Optional[ProfileBase] = None
 
     class Config:
