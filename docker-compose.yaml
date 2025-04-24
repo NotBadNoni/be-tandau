@@ -29,6 +29,7 @@ services:
   redis-tandau:
     image: redis:latest
     restart: always
+    command: ["redis-server", "--appendonly", "yes"]
     ports:
       - "6379:6379"
     networks:
