@@ -5,10 +5,8 @@ from dishka.integrations.fastapi import inject
 from fastapi import APIRouter, HTTPException
 
 from src.controllers.subject import SubjectController
-from src.core.exeptions import NotFoundException, BadRequestException
+from src.core.exeptions import NotFoundException
 from src.schemas.subject import (
-    SubjectCreate,
-    SubjectUpdate,
     SubjectResponse
 )
 
@@ -24,6 +22,7 @@ async def list_subjects(
     Returns a list of all subjects.
     """
     return await controller.list_subjects()
+
 
 #
 # @router.post("", response_model=SubjectResponse)
@@ -41,7 +40,7 @@ async def list_subjects(
 #         raise HTTPException(status_code=400, detail=e.message)
 
 
-@router.get("/{subject_id}", response_model=SubjectResponse)
+@router.get("/{subject_id}")
 @inject
 async def get_subject(
         subject_id: int,
