@@ -2,13 +2,10 @@ from typing import List
 
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
 from src.controllers.subject_combination import SubjectCombinationController
-from src.core.exeptions import NotFoundException, BadRequestException
 from src.schemas.subject_combination import (
-    SubjectCombinationCreate,
-    SubjectCombinationUpdate,
     SubjectCombinationResponse
 )
 
@@ -24,6 +21,8 @@ async def list_combinations(
     List all subject combinations (e.g., (Math, Physics)).
     """
     return await controller.list_combinations()
+
+
 #
 #
 # @router.post("", response_model=SubjectCombinationResponse)
@@ -41,19 +40,13 @@ async def list_combinations(
 #         raise HTTPException(status_code=400, detail=e.message)
 
 
-@router.get("/{combination_id}", response_model=SubjectCombinationResponse)
+@router.get("/{combination_id}")
 @inject
 async def get_combination(
         combination_id: int,
         controller: FromDishka[SubjectCombinationController]
 ):
-    """
-    Retrieve a single subject combination by ID.
-    """
-    try:
-        return await controller.get_combination(combination_id)
-    except NotFoundException as e:
-        raise HTTPException(status_code=404, detail=e.message)
+    return await controller.get_combination(combination_id)
 
 #
 # @router.put("/{combination_id}", response_model=SubjectCombinationResponse)

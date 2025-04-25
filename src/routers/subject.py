@@ -2,10 +2,9 @@ from typing import List
 
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
 from src.controllers.subject import SubjectController
-from src.core.exeptions import NotFoundException
 from src.schemas.subject import (
     SubjectResponse
 )
@@ -40,7 +39,7 @@ async def list_subjects(
 #         raise HTTPException(status_code=400, detail=e.message)
 
 
-@router.get("/{subject_id}")
+@router.get("/{subject_id}", response_model=SubjectResponse)
 @inject
 async def get_subject(
         subject_id: int,
