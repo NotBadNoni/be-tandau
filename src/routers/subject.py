@@ -49,10 +49,7 @@ async def get_subject(
     """
     Retrieve a single subject by ID.
     """
-    try:
-        return await controller.get_subject(subject_id)
-    except NotFoundException as e:
-        raise HTTPException(status_code=404, detail=e.message)
+    return await controller.get_subject(subject_id)
 
 # @router.put("/{subject_id}", response_model=SubjectResponse)
 # @inject
