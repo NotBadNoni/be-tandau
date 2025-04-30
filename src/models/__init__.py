@@ -20,6 +20,11 @@ class TimestampMixin:
         )
 
 
+class FieldMixin:
+    def get_field(self, field: str, lang: str) -> str:
+        return getattr(self, f"{field}_{lang}", None)
+
+
 Base = declarative_base()
 
 from .chat import Chat

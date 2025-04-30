@@ -1,8 +1,9 @@
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 
 from src.controllers.auth import AuthController
+from src.core.config import oauth, settings
 from src.schemas.auth import SignUpSchema, SignInSchema, SendOtpSchema, VerifyOtpSchema, ResetPasswordSchema
 
 router = APIRouter()
@@ -36,3 +37,20 @@ async def verify_reset_password(form: VerifyOtpSchema, use_case: FromDishka[Auth
 @inject
 async def reset_password(form: ResetPasswordSchema, use_case: FromDishka[AuthController]):
     return await use_case.reset_password(form)
+
+
+@router.get("/google/login")
+async def google_login(request: Request):
+    return await oauth.google.authorize_redirect(request, settings.GOOGLE_REDIRECT_URI)
+
+
+@router.get("/google/callback")
+@inject
+async def google_callback(
+        request: Request,
+        controller: FromDishka[AuthController]
+):
+    token = await oauth.google.authorize_access_token(request)
+    user_info = await oauth.google.parse_id_token(request, token)
+
+    return await controller.login_with_google(user_info)

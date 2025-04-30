@@ -3,11 +3,12 @@ from fastapi import FastAPI
 from sqladmin import Admin
 from sqlalchemy.ext.asyncio import AsyncEngine
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 from starlette.staticfiles import StaticFiles
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from src import SubjectCombinationSpecialtiesAdmin
-from src.core.config import MEDIA_DIR
+from src.core.config import MEDIA_DIR, settings
 from src.di.app_provider import create_container
 from src.models import sqlalchemy_models
 from src.routers import (
@@ -45,6 +46,10 @@ def create_app():
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+    )
+    app.add_middleware(
+        SessionMiddleware,
+        secret_key=settings.SECRET_KEY
     )
     app.add_middleware(ProxyHeadersMiddleware)
     app.mount('/media', StaticFiles(directory=MEDIA_DIR), name='media')

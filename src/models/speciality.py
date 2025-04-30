@@ -8,8 +8,15 @@ class Specialty(Base, TimestampMixin):
     __tablename__ = "specialties"
 
     id: orm.Mapped[int] = orm.mapped_column(sa.Integer, primary_key=True)
-    name: orm.Mapped[str] = orm.mapped_column(sa.String(255), unique=True, nullable=False)
-    description: orm.Mapped[str] = orm.mapped_column(sa.Text, nullable=True)
+    name_en: orm.Mapped[str] = orm.mapped_column(sa.String(255), unique=True, nullable=False)
+
+    name_ru: orm.Mapped[str] = orm.mapped_column(sa.String(255), nullable=True)
+    name_kk: orm.Mapped[str] = orm.mapped_column(sa.String(255), nullable=True)
+
+    description_en: orm.Mapped[str] = orm.mapped_column(sa.Text, nullable=True)
+
+    description_ru: orm.Mapped[str] = orm.mapped_column(sa.Text, nullable=True)
+    description_kk: orm.Mapped[str] = orm.mapped_column(sa.Text, nullable=True)
 
     valid_combinations: orm.Mapped[list["SubjectCombination"]] = orm.relationship(
         "SubjectCombination",

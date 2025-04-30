@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+from authlib.integrations.starlette_client import OAuth
 from pydantic_settings import BaseSettings
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -29,6 +30,10 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: str
     OPENAI_API_KEY: str
 
+    GOOGLE_CLIENT_ID: str
+    GOOGLE_CLIENT_SECRET: str
+    GOOGLE_REDIRECT_URI: str
+
     class Config:
         env_file = BASE_DIR / ".env"
 
@@ -54,3 +59,15 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+oauth = OAuth()
+
+oauth.register(
+    name='google',
+    client_id=settings.GOOGLE_CLIENT_ID,
+    client_secret=settings.GOOGLE_CLIENT_SECRET,
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+    api_base_url='https://www.googleapis.com/oauth2/v1/',
+    userinfo_endpoint='https://openidconnect.googleapis.com/v1/userinfo',
+    client_kwargs={'scope': 'openid email profile'},
+)

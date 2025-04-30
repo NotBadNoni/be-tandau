@@ -14,7 +14,7 @@ router = APIRouter(prefix="")
 
 @router.get("/me", response_model=UserResponse)
 @inject
-async def patch_me(
+async def me(
         controller: FromDishka[UserController],
         current_user=Depends(get_current_user)
 ):

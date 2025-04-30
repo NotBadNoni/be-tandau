@@ -129,3 +129,33 @@ class AuthController:
         await self.redis_service.delete(token_key)
 
         return {"detail": "Your password has been reset successfully."}
+
+    async def login_with_google(self, user_info: dict):
+        email = user_info.get("email")
+        if not email:
+            raise BadRequestException("Google account does not provide an email")
+
+        user = await self.user_repository.get_user_by_email(email)
+
+        if not user:
+            username = email.split("@")[0]
+            user_data = {
+                "email": email,
+                "username": username,
+                "password": self.pass_handler.hash(uuid.uuid4().hex)
+            }
+
+            async with self.uow:
+                user = await self.user_repository.create_user(user_data)
+                await self.profile_repository.create_profile({
+                    "user_id": user.id,
+                    "name": user_info.get("name"),
+                })
+
+        access_token = self.jwt_service.encode_access_token({"sub": str(user.id)})
+        refresh_token = self.jwt_service.encode_refresh_token({"sub": str(user.id)})
+
+        return {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+        }
