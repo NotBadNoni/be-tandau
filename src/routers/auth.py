@@ -51,6 +51,7 @@ async def google_callback(
         controller: FromDishka[AuthController]
 ):
     token = await oauth.google.authorize_access_token(request)
-    user_info = await oauth.google.parse_id_token(request, token)
+    resp = await oauth.google.get("userinfo", token=token)
+    user_info = resp.json()
 
     return await controller.login_with_google(user_info)
