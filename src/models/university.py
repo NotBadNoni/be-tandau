@@ -49,4 +49,4 @@ class University(Base, FieldMixin, TimestampMixin):
     )
 
     def __repr__(self):
-        return f"<University id={self.id} name={self.name}>"
+        return f"<University id={self.id} name={self.name_en}>"

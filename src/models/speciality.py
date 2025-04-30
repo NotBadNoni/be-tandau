@@ -25,4 +25,4 @@ class Specialty(Base, TimestampMixin):
     )
 
     def __repr__(self):
-        return f"<Specialty id={self.id} name={self.name}>"
+        return f"<Specialty id={self.id} name={self.name_en}>"

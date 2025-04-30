@@ -13,4 +13,4 @@ class Subject(Base, TimestampMixin):
     name_kk: orm.Mapped[str] = orm.mapped_column(sa.String(255), nullable=True)
 
     def __repr__(self):
-        return f"<Subject id={self.id} name={self.name}>"
+        return f"<Subject id={self.id} name={self.name_en} name={self.name_ru} name={self.name_kk}>"
