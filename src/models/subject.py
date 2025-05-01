@@ -1,10 +1,10 @@
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
 
-from src.models import Base, TimestampMixin
+from src.models import Base, TimestampMixin, FieldMixin
 
 
-class Subject(Base, TimestampMixin):
+class Subject(Base, TimestampMixin, FieldMixin):
     __tablename__ = "subjects"
 
     id: orm.Mapped[int] = orm.mapped_column(sa.Integer, primary_key=True)
