@@ -82,7 +82,7 @@ class ChatController:
         lines: List[str] = []
         for uni in universities:
             spec_names = [s.name_en for s in getattr(uni, "specialties", [])]
-            parts = [f"- {uni.name_en} ({uni.country_name})"]
+            parts = [f"- {uni.name_en} ({uni.country_name_en})"]
             if getattr(uni, "scholarship_name", None):
                 parts.append(f"Scholarship: {uni.scholarship_name_en}")
             if spec_names:
