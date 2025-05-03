@@ -13,10 +13,10 @@ class SubjectController:
 
     async def list_subjects(self, language: str) -> List[SubjectResponse]:
         subjects = await self.subject_repository.list_subjects()
-        return [SubjectResponse.from_model(subject, f"_{language}") for subject in subjects]
+        return [SubjectResponse.from_model(subject, f"{language}") for subject in subjects]
 
     async def get_subject(self, subject_id: int, language: str) -> SubjectResponse:
         subject = await self.subject_repository.get_subject_by_id(subject_id)
         if not subject:
             raise NotFoundException("Subject not found.")
-        return SubjectResponse.from_model(subject, f"_{language}")
+        return SubjectResponse.from_model(subject, f"{language}")
