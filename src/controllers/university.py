@@ -34,7 +34,7 @@ class UniversityController:
         ]
 
     async def get_universities_by_country(self, country_name: str, language: str = 'en'):
-        universities = await self.university_repository.get_universities_by_country(country_name)
+        universities = await self.university_repository.get_universities_by_country(country_name, language)
         return [
             UniversityResponse.from_model(university, f"{language}")
             for university in universities

@@ -85,7 +85,7 @@ class UniversityRepository:
         result = await self._session.execute(stmt)
         return result.scalars().all()
 
-    async def get_universities_by_country(self, country_name: str) -> list[University]:
-        stmt = select(University).where(University.country_name.ilike(country_name))
+    async def get_universities_by_country(self, country_name: str, language:str) -> list[University]:
+        stmt = select(University).where(University.get_field(University,"country_name", language).ilike(country_name))
         result = await self._session.execute(stmt)
         return result.scalars().all()
