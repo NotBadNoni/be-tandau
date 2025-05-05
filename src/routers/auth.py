@@ -55,23 +55,26 @@ async def google_callback(
     resp = await oauth.google.get("userinfo", token=token)
     user_info = resp.json()
     token = await controller.login_with_google(user_info)
-    response = RedirectResponse(url="https://tanday.kz")
+    response = RedirectResponse(url="https://tanday.kz/auth/callback")
+
     response.set_cookie(
-        "access_token",
-        token["access_token"],
+        key="access_token",
+        value=token["access_token"],
         httponly=False,
         secure=True,
-        max_age=10080,
         samesite="none",
-        path="/"
+        path="/",
+        max_age=3600,
     )
+
     response.set_cookie(
-        "refresh_token",
-        token["refresh_token"],
+        key="refresh_token",
+        value=token["refresh_token"],
         httponly=False,
         secure=True,
-        max_age=43200,
         samesite="none",
-        path="/"
+        path="/",
+        max_age=7 * 24 * 3600,
     )
+
     return response
