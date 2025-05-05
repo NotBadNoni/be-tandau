@@ -1,6 +1,7 @@
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Response
+from starlette.responses import RedirectResponse
 
 from src.controllers.auth import AuthController
 from src.core.config import oauth, settings
@@ -48,10 +49,28 @@ async def google_login(request: Request):
 @inject
 async def google_callback(
         request: Request,
+        response: Response,
         controller: FromDishka[AuthController]
 ):
     token = await oauth.google.authorize_access_token(request)
     resp = await oauth.google.get("userinfo", token=token)
     user_info = resp.json()
+    token = await controller.login_with_google(user_info)
 
-    return await controller.login_with_google(user_info)
+    response.set_cookie(
+        "access_token",
+        token["access_token"],
+        secure=True,
+        max_age=10080,
+        samesite="none",
+        path="/"
+    )
+    response.set_cookie(
+        "refresh_token",
+        token["refresh_token"],
+        secure=True,
+        max_age=43200,
+        samesite="none",
+        path="/"
+    )
+    return RedirectResponse(url="https://tandau.vercel.app/ru")
