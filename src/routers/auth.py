@@ -55,7 +55,7 @@ async def google_callback(
     resp = await oauth.google.get("userinfo", token=token)
     user_info = resp.json()
     token = await controller.login_with_google(user_info)
-    response = RedirectResponse(url="https://tandau.vercel.app/ru")
+    response = RedirectResponse(url="https://tanday.kz")
     response.set_cookie(
         "access_token",
         token["access_token"],
