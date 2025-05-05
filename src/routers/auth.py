@@ -59,6 +59,7 @@ async def google_callback(
     response.set_cookie(
         "access_token",
         token["access_token"],
+        httponly=False,
         secure=True,
         max_age=10080,
         samesite="none",
@@ -67,6 +68,7 @@ async def google_callback(
     response.set_cookie(
         "refresh_token",
         token["refresh_token"],
+        httponly=False,
         secure=True,
         max_age=43200,
         samesite="none",
