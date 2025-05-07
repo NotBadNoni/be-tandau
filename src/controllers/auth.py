@@ -149,7 +149,7 @@ class AuthController:
                 user = await self.user_repository.create_user(user_data)
                 await self.profile_repository.create_profile({
                     "user_id": user.id,
-                    "name": user_info.get("name"),
+                    "first_name": user_info.get("name"),
                 })
 
         access_token = self.jwt_service.encode_access_token({"sub": str(user.id)})
